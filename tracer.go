@@ -27,6 +27,8 @@ import (
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
 
+	"runtime/debug"
+
 	"github.com/uber/jaeger-client-go/internal/baggage"
 	"github.com/uber/jaeger-client-go/internal/throttler"
 	"github.com/uber/jaeger-client-go/log"
@@ -218,8 +220,11 @@ func (t *Tracer) startSpanWithOptions(
 		ctx, ok := ref.ReferencedContext.(SpanContext)
 		if !ok {
 			t.logger.Error(fmt.Sprintf(
-				"Reference contains invalid type of SpanReference: %s",
-				reflect.ValueOf(ref.ReferencedContext)))
+				"Reference in span %q contains invalid type of SpanReference: %s. stacktrace: %s",
+				operationName,
+				reflect.ValueOf(ref.ReferencedContext)),
+				debug.Stack(),
+			)
 			continue
 		}
 		if !isValidReference(ctx) {
