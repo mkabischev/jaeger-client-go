@@ -222,9 +222,9 @@ func (t *Tracer) startSpanWithOptions(
 			t.logger.Error(fmt.Sprintf(
 				"Reference in span %q contains invalid type of SpanReference: %s. stacktrace: %s",
 				operationName,
-				reflect.ValueOf(ref.ReferencedContext)),
+				reflect.ValueOf(ref.ReferencedContext),
 				debug.Stack(),
-			)
+			))
 			continue
 		}
 		if !isValidReference(ctx) {
